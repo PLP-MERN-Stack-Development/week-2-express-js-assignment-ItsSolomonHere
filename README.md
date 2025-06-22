@@ -1,63 +1,241 @@
-[![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-2e0aaae1b6195c2367325f4f02e2d04e9abb55f0b24a779b69b11b9e10269abc.svg)](https://classroom.github.com/online_ide?assignment_repo_id=19815153&assignment_repo_type=AssignmentRepo)
-# Express.js RESTful API Assignment
+# Product API
 
-This assignment focuses on building a RESTful API using Express.js, implementing proper routing, middleware, and error handling.
+A RESTful API built using Express.js for managing a collection of products.
 
-## Assignment Overview
+## 🚀 Features
 
-You will:
-1. Set up an Express.js server
-2. Create RESTful API routes for a product resource
-3. Implement custom middleware for logging, authentication, and validation
-4. Add comprehensive error handling
-5. Develop advanced features like filtering, pagination, and search
+* Full CRUD operations for products
+* Middleware for logging, authentication, and validation
+* Global error handling with custom error classes
+* Filtering, pagination, and search
+* Product statistics endpoint
 
-## Getting Started
+## 📦 Technologies Used
 
-1. Accept the GitHub Classroom assignment invitation
-2. Clone your personal repository that was created by GitHub Classroom
-3. Install dependencies:
-   ```
-   npm install
-   ```
-4. Run the server:
-   ```
-   npm start
-   ```
+* Node.js
+* Express.js
+* UUID
+* Nodemon (for development)
 
-## Files Included
+---
 
-- `Week2-Assignment.md`: Detailed assignment instructions
-- `server.js`: Starter Express.js server file
-- `.env.example`: Example environment variables file
+## 📂 Folder Structure
 
-## Requirements
+```
+express-api-assignment/
+├── middleware/
+│   ├── auth.js
+│   ├── logger.js
+│   └── validateProduct.js
+├── errors/
+│   ├── NotFoundError.js
+│   └── ValidationError.js
+├── server.js
+└── package.json
+```
 
-- Node.js (v18 or higher)
-- npm or yarn
-- Postman, Insomnia, or curl for API testing
+---
 
-## API Endpoints
+## 🔐 Authentication
 
-The API will have the following endpoints:
+* All modifying routes (POST, PUT, DELETE) require an `x-api-key` header.
+* Valid API key: `123456`
 
-- `GET /api/products`: Get all products
-- `GET /api/products/:id`: Get a specific product
-- `POST /api/products`: Create a new product
-- `PUT /api/products/:id`: Update a product
-- `DELETE /api/products/:id`: Delete a product
+Example:
 
-## Submission
+```
+Header: x-api-key: 123456
+```
 
-Your work will be automatically submitted when you push to your GitHub Classroom repository. Make sure to:
+---
 
-1. Complete all the required API endpoints
-2. Implement the middleware and error handling
-3. Document your API in the README.md
-4. Include examples of requests and responses
+## 📘 API Endpoints
 
-## Resources
+### Root
 
-- [Express.js Documentation](https://expressjs.com/)
-- [RESTful API Design Best Practices](https://restfulapi.net/)
-- [HTTP Status Codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) 
+```
+GET /
+Response: "Welcome to the Product API! Go to /api/products to see all products."
+```
+
+### Get All Products
+
+```
+GET /api/products
+Query Params:
+  - category (optional)
+  - page (optional, default=1)
+  - limit (optional, default=2)
+  - search (optional)
+
+Example: /api/products?category=electronics&page=1&limit=2&search=laptop
+```
+
+**Response:**
+
+```json
+{
+  "total": 1,
+  "results": [
+    {
+      "id": "1",
+      "name": "Laptop",
+      "description": "High-performance laptop with 16GB RAM",
+      "price": 1200,
+      "category": "electronics",
+      "inStock": true
+    }
+  ]
+}
+```
+
+### Get Product by ID
+
+```
+GET /api/products/:id
+```
+
+**Response:**
+
+```json
+{
+  "id": "2",
+  "name": "Smartphone",
+  "description": "Latest model with 128GB storage",
+  "price": 800,
+  "category": "electronics",
+  "inStock": true
+}
+```
+
+### Create Product
+
+```
+POST /api/products
+Headers:
+  x-api-key: 123456
+Body:
+{
+  "name": "Blender",
+  "description": "High-speed blender",
+  "price": 99.99,
+  "category": "kitchen",
+  "inStock": true
+}
+```
+
+**Response:** `201 Created`
+
+```json
+{
+  "id": "<generated>",
+  "name": "Blender",
+  "description": "High-speed blender",
+  "price": 99.99,
+  "category": "kitchen",
+  "inStock": true
+}
+```
+
+### Update Product
+
+```
+PUT /api/products/:id
+Headers:
+  x-api-key: 123456
+Body:
+{
+  "name": "New Product Name",
+  "price": 1500
+}
+```
+
+**Response:**
+
+```json
+{
+  "id": "1",
+  "name": "New Product Name",
+  "description": "High-performance laptop with 16GB RAM",
+  "price": 1500,
+  "category": "electronics",
+  "inStock": true
+}
+```
+
+### Delete Product
+
+```
+DELETE /api/products/:id
+Headers:
+  x-api-key: 123456
+```
+
+**Response:**
+
+```json
+{
+  "id": "3",
+  "name": "Coffee Maker",
+  ...
+}
+```
+
+### Product Stats
+
+```
+GET /api/products/stats
+```
+
+**Response:**
+
+```json
+{
+  "electronics": 2,
+  "kitchen": 1
+}
+```
+
+---
+
+## 🧱 Middleware
+
+### Logger
+
+Logs method, URL, and timestamp for every request.
+
+### Auth
+
+Checks for a valid API key in `x-api-key` header.
+
+### Validation
+
+Validates product fields on creation/update.
+
+---
+
+## ❌ Error Handling
+
+* `NotFoundError` – for missing products
+* `ValidationError` – for bad input
+* Global error handler returns structured JSON errors
+
+Example response:
+
+```json
+{
+  "error": "Product not found"
+}
+```
+
+---
+
+## 📜 License
+
+ISC License
+
+---
+
+## 👨‍💻 Author
+
+Solomon
